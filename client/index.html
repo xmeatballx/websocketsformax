@@ -16,10 +16,7 @@
         const socket = io.connect();
         if (window.max) {
             window.max.bindInlet("room_name", (roomName) => {
-                // axios.post("/joinroom", {
-                //     "room": roomName,
-                //     "id": socket.id
-                // });
+
                 socket.emit("room_name", {
                     "room": roomName,
                     "id": socket.id

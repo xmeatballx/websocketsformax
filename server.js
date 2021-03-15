@@ -25,11 +25,13 @@ webSocketServer.on("connection", socket => {
     socket.on("room_name", (m) => {
         users.push(m);
         rooms.add(m.room);
-        const thisUser = users.filter(user => user.id = socket.id);
+        const thisUser = users.find(user => user.id == socket.id && user.room == m.room);
+        console.log(thisUser);
         socket.join(thisUser.room);
         socket.on("cv_out1", (m) => {
             console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in1", m);
+            console.log(socket);
         })
         socket.on("cv_out2", (m) => {
             console.log(m)
@@ -43,8 +45,11 @@ webSocketServer.on("connection", socket => {
             console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in4", m);
         })
+
+        socket.on("disconnect", (reason) => {
+            users = users.filter(user => user.id != socket.id);
+        })
     })
-    // console.log('connection')
 })
 
 webSocketServer.on("room_name", (m) => {
