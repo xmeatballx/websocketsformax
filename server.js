@@ -31,7 +31,6 @@ webSocketServer.on("connection", socket => {
         socket.on("cv_out1", (m) => {
             console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in1", m);
-            console.log(socket);
         })
         socket.on("cv_out2", (m) => {
             console.log(m)
@@ -47,6 +46,7 @@ webSocketServer.on("connection", socket => {
         })
 
         socket.on("disconnect", (reason) => {
+            socket.leave(thisUser.room);
             users = users.filter(user => user.id != socket.id);
         })
     })
