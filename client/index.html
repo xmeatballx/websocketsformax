@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+
+</head>
+
+<body>
+    <script>
+        const socket = io.connect();
+        if (window.max) {
+            window.max.bindInlet("room_name", (roomName) => {
+                // axios.post("/joinroom", {
+                //     "room": roomName,
+                //     "id": socket.id
+                // });
+                socket.emit("room_name", {
+                    "room": roomName,
+                    "id": socket.id
+                })
+            })
+
+            window.max.bindInlet("cv_out1", (val) => {
+                socket.emit("cv_out1", val);
+            })
+
+            window.max.bindInlet("cv_out2", (val) => {
+                socket.emit("cv_out2", val);
+            })
+
+            window.max.bindInlet("cv_out3", (val) => {
+                socket.emit("cv_out3", val);
+            })
+
+            window.max.bindInlet("cv_out4", (val) => {
+                socket.emit("cv_out4", val);
+            })
+
+            socket.on("cv_in1", (val) => {
+                window.max.outlet('a ' + val);
+            })
+
+            socket.on("cv_in2", (val) => {
+                window.max.outlet('b ' + val);
+            })
+
+            socket.on("cv_in3", (val) => {
+                window.max.outlet('c ' + val);
+            })
+
+            socket.on("cv_in4", (val) => {
+                window.max.outlet('d ' + val);
+            })
+        }
+        socket.on("connect", () => console.log("connected to wss"));
+        socket.on("error", (err) => console.log(err));
+
+        let inputVal = '';
+        const input = document.getElementById("input");
+        input.onchange = () => inputVal = input.value;
+        button = document.getElementById("submit");
+        button.onclick = () => {
+
+        }
+    </script>
+
+</body>
+
+</html>
