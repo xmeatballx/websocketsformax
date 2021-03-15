@@ -47,7 +47,6 @@ webSocketServer.on("connection", socket => {
         })
 
         socket.on("disconnect", (reason) => {
-            socket.leave(thisUser.room);
             users = users.filter(user => user.id != socket.id);
         })
     })
