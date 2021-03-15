@@ -27,7 +27,7 @@ webSocketServer.on("connection", socket => {
         rooms.add(m.room);
         const thisUser = users.find(user => user.id == socket.id && user.room == m.room);
         const oldRoom = users.find(user => user.room != m.room);
-        socket.leave(oldRoom.room);
+        if (oldRoom.room) socket.leave(oldRoom.room);
         socket.join(thisUser.room);
         socket.on("cv_out1", (m) => {
             console.log(m)
