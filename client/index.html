@@ -23,20 +23,36 @@
                 })
             })
 
-            window.max.bindInlet("cv_out1", (val) => {
-                socket.emit("cv_out1", val);
+            window.max.bindInlet("out1", (val) => {
+                socket.emit("out1", val);
             })
 
-            window.max.bindInlet("cv_out2", (val) => {
-                socket.emit("cv_out2", val);
+            window.max.bindInlet("out2", (val) => {
+                socket.emit("out2", val);
             })
 
-            window.max.bindInlet("cv_out3", (val) => {
-                socket.emit("cv_out3", val);
+            window.max.bindInlet("out3", (val) => {
+                socket.emit("out3", val);
             })
 
-            window.max.bindInlet("cv_out4", (val) => {
-                socket.emit("cv_out4", val);
+            window.max.bindInlet("out4", (val) => {
+                socket.emit("out4", val);
+            })
+
+            window.max.bindInlet("out5", (val) => {
+                socket.emit("out1", val);
+            })
+
+            window.max.bindInlet("out6", (val) => {
+                socket.emit("out2", val);
+            })
+
+            window.max.bindInlet("out7", (val) => {
+                socket.emit("out3", val);
+            })
+
+            window.max.bindInlet("out8", (val) => {
+                socket.emit("out4", val);
             })
 
             socket.on("cv_in1", (val) => {
@@ -53,6 +69,22 @@
 
             socket.on("cv_in4", (val) => {
                 window.max.outlet('d ' + val);
+            })
+
+            socket.on("cv_in5", (val) => {
+                window.max.outlet('e ' + val);
+            })
+
+            socket.on("cv_in6", (val) => {
+                window.max.outlet('f ' + val);
+            })
+
+            socket.on("cv_in7", (val) => {
+                window.max.outlet('g ' + val);
+            })
+
+            socket.on("cv_in8", (val) => {
+                window.max.outlet('h ' + val);
             })
         }
         socket.on("connect", () => console.log("connected to wss"));

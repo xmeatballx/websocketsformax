@@ -23,27 +23,45 @@ const webSocketServer = require("socket.io")(server);
 
 webSocketServer.on("connection", socket => {
     socket.on("room_name", (m) => {
+        console.log(m);
         users.push(m);
         rooms.add(m.room);
         const thisUser = users.find(user => user.id == socket.id && user.room == m.room);
         const oldRoom = users.find(user => user.room != m.room);
         if (oldRoom != undefined) socket.leave(oldRoom.room);
         socket.join(thisUser.room);
-        socket.on("cv_out1", (m) => {
+        socket.on("out1", (m) => {
             console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in1", m);
         })
-        socket.on("cv_out2", (m) => {
+        socket.on("out2", (m) => {
             console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in2", m);
         })
-        socket.on("cv_out3", (m) => {
+        socket.on("out3", (m) => {
             console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in3", m);
         })
-        socket.on("cv_out4", (m) => {
+        socket.on("out4", (m) => {
             console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in4", m);
+        })
+
+        socket.on("out5", (m) => {
+            console.log(m)
+            socket.to(thisUser.room).broadcast.emit("cv_in5", m);
+        })
+        socket.on("out6", (m) => {
+            console.log(m)
+            socket.to(thisUser.room).broadcast.emit("cv_in6", m);
+        })
+        socket.on("out7", (m) => {
+            console.log(m)
+            socket.to(thisUser.room).broadcast.emit("cv_in7", m);
+        })
+        socket.on("out8", (m) => {
+            console.log(m)
+            socket.to(thisUser.room).broadcast.emit("cv_in8", m);
         })
 
         socket.on("disconnect", (reason) => {
@@ -52,9 +70,9 @@ webSocketServer.on("connection", socket => {
     })
 })
 
-webSocketServer.on("room_name", (m) => {
-    console.log(m);
-})
+// webSocketServer.on("room_name", (m) => {
+//     console.log(m);
+// })
 
 server.listen(port);
 
