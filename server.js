@@ -2,7 +2,6 @@ const http = require("http");
 const cors = require("cors");
 
 const io = require("socket.io");
-let rooms = new Set();
 let users = [];
 
 const express = require("express");
@@ -11,9 +10,8 @@ const bodyparser = require("body-parser");
 app.use(bodyparser.json());
 app.use(cors());
 app.get("/", (req, res) => res.sendFile(__dirname + "/client/index.html"));
-app.post("/joinroom", (req, res) => {
-})
 
+const Queue = require("./queue");
 
 const port = 3000;
 
@@ -25,25 +23,34 @@ webSocketServer.on("connection", socket => {
     socket.on("room_name", (m) => {
         console.log(m);
         users.push(m);
-        rooms.add(m.room);
         const thisUser = users.find(user => user.id == socket.id && user.room == m.room);
         const oldRoom = users.find(user => user.room != m.room);
         if (oldRoom != undefined) socket.leave(oldRoom.room);
-        socket.join(thisUser.room);
+        if (thisUser != undefined) socket.join(thisUser.room);
+        thisQueue = new Queue();
+        socket.on("chat_message", function (m) {
+            if (thisQueue.contents.length > 10) {
+                thisQueue.dequeue();
+            }
+            thisQueue.enqueue(m);
+            console.log(thisQueue.contents);
+            webSocketServer.to(socket.id).emit("self_chat_message", thisQueue.contents);
+            socket.in(thisUser.room).broadcast.emit("chat_message", thisQueue.contents);
+        })
         socket.on("out1", (m) => {
-            console.log(m)
+            // console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in1", m);
         })
         socket.on("out2", (m) => {
-            console.log(m)
+            // console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in2", m);
         })
         socket.on("out3", (m) => {
-            console.log(m)
+            // console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in3", m);
         })
         socket.on("out4", (m) => {
-            console.log(m)
+            // console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in4", m);
         })
 
@@ -52,15 +59,15 @@ webSocketServer.on("connection", socket => {
             socket.to(thisUser.room).broadcast.emit("cv_in5", m);
         })
         socket.on("out6", (m) => {
-            console.log(m)
+            // console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in6", m);
         })
         socket.on("out7", (m) => {
-            console.log(m)
+            // console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in7", m);
         })
         socket.on("out8", (m) => {
-            console.log(m)
+            // console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in8", m);
         })
 

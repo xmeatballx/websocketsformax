@@ -23,6 +23,10 @@
                 })
             })
 
+            window.max.bindInlet("chat_message", (m) => {
+                socket.emit("chat_message", m);
+            })
+
             window.max.bindInlet("out1", (val) => {
                 socket.emit("out1", val);
             })
@@ -53,6 +57,24 @@
 
             window.max.bindInlet("out8", (val) => {
                 socket.emit("out4", val);
+            })
+
+            socket.on("chat_message", (m) => {
+                let chat = '';
+                m.forEach((element, index) => {
+                    if (index > 0) chat += "\n" + element;
+                    else chat += element;
+                });
+                window.max.outlet("message", chat);
+            })
+
+            socket.on("self_chat_message", (m) => {
+                let chat = '';
+                m.forEach((element, index) => {
+                    if (index > 0) chat += "\n" + element;
+                    else chat += element;
+                });
+                window.max.outlet("message", chat);
             })
 
             socket.on("cv_in1", (val) => {
