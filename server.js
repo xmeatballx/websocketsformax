@@ -24,9 +24,10 @@ webSocketServer.on("connection", socket => {
         console.log(m);
         users.push(m);
         const thisUser = users.find(user => user.id == socket.id && user.room == m.room);
-        const oldRoom = users.find(user => user.room != m.room);
-        if (oldRoom != undefined) socket.leave(oldRoom.room);
+        // console.log(thisUser);
+        socket.rooms = {};
         if (thisUser != undefined) socket.join(thisUser.room);
+        // console.log(socket);
         thisQueue = new Queue();
         socket.on("chat_message", function (m) {
             if (thisQueue.contents.length > 10) {
@@ -38,7 +39,8 @@ webSocketServer.on("connection", socket => {
             socket.in(thisUser.room).broadcast.emit("chat_message", thisQueue.contents);
         })
         socket.on("out1", (m) => {
-            // console.log(m)
+            console.log(socket.rooms)
+            console.log(m)
             socket.to(thisUser.room).broadcast.emit("cv_in1", m);
         })
         socket.on("out2", (m) => {
