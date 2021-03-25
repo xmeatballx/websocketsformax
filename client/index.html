@@ -23,6 +23,10 @@
                 })
             })
 
+            window.max.bindInlet("leave_room", () => {
+                socket.emit("leave_room", socket.id);
+            })
+
             window.max.bindInlet("chat_message", (m) => {
                 socket.emit("chat_message", m);
             })

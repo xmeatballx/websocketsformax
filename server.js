@@ -12,6 +12,7 @@ app.use(cors());
 app.get("/", (req, res) => res.sendFile(__dirname + "/client/index.html"));
 
 const Queue = require("./queue");
+const { Console } = require("console");
 
 const port = 3000;
 
@@ -24,10 +25,11 @@ webSocketServer.on("connection", socket => {
         console.log(m);
         users.push(m);
         const thisUser = users.find(user => user.id == socket.id && user.room == m.room);
-        // console.log(thisUser);
         socket.rooms = {};
         if (thisUser != undefined) socket.join(thisUser.room);
-        // console.log(socket);
+        socket.on("leave_room", (m) => {
+            if (m == socket.id) socket.rooms = {};
+        })
         thisQueue = new Queue();
         socket.on("chat_message", function (m) {
             if (thisQueue.contents.length > 10) {
