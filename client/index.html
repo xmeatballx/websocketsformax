@@ -16,11 +16,19 @@
         const socket = io.connect();
         if (window.max) {
             window.max.bindInlet("room_name", (roomName) => {
-
+                console.log(roomName)
                 socket.emit("room_name", {
                     "room": roomName,
                     "id": socket.id
                 })
+            })
+
+            window.max.bindInlet("DM", (to, from, message) => {
+                socket.emit("DM_IN", {
+                    to: to,
+                    from: from,
+                    message: message
+                });
             })
 
             window.max.bindInlet("leave_room", () => {
@@ -79,6 +87,15 @@
                     else chat += element;
                 });
                 window.max.outlet("message", chat);
+            })
+
+            socket.on("DM_OUT", (m) => {
+                let chat = '';
+                m.forEach((element, index) => {
+                    if (index > 0) chat += "\n" + element;
+                    else chat += element;
+                });
+                window.max.outlet("dm", chat);
             })
 
             socket.on("cv_in1", (val) => {

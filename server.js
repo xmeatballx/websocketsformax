@@ -14,6 +14,9 @@ app.get("/", (req, res) => res.sendFile(__dirname + "/client/index.html"));
 const Queue = require("./queue");
 const { Console } = require("console");
 
+let uniqueReceivers = new Set();
+let receivers = new Array();
+
 const port = 3000;
 
 const server = http.createServer(app);
@@ -22,7 +25,7 @@ const webSocketServer = require("socket.io")(server);
 
 webSocketServer.on("connection", socket => {
     socket.on("room_name", (m) => {
-        // console.log(m);
+        console.log(m);
         users.push(m);
         const thisUser = users.find(user => user.id == socket.id && user.room == m.room);
         socket.rooms = {};
@@ -42,6 +45,7 @@ webSocketServer.on("connection", socket => {
             webSocketServer.to(socket.id).emit("self_chat_message", thisQueue.contents);
             socket.in(thisUser.room).broadcast.emit("chat_message", thisQueue.contents);
         })
+
         socket.on("out1", (m) => {
             // console.log(thisUser.room);
             // console.log(m)
@@ -81,6 +85,23 @@ webSocketServer.on("connection", socket => {
             users = users.filter(user => user.id != socket.id);
         })
     })
+
+    dmQueue = new Queue();
+
+    socket.on("DM_IN", (m) => {
+        let r = {
+            name: m.from,
+            id: socket.id
+        }
+        if (!receivers.some((receiver) => { return receiver.name === r.name; })) receivers.push(r);
+        const peer = receivers.filter((r) => r.name == m.to);
+        if (peer[0] != undefined) {
+            if (dmQueue.length > 10) dmQueue.dequeue();
+            dmQueue.enqueue(`${m.from}: ${m.message}`);
+            webSocketServer.to(socket.id).emit("DM_OUT", dmQueue.contents);
+            webSocketServer.to(peer[0].id).emit("DM_OUT", dmQueue.contents);
+        }
+    });
 })
 
 // webSocketServer.on("room_name", (m) => {
